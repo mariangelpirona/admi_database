@@ -125,6 +125,9 @@ CHANGE COLUMN id_ventas id_venta INT PRIMARY KEY AUTO_INCREMENT;
 
 ALTER TABLE usuarios ADD Password VARCHAR(15) AFTER correo;
 
+ALTER TABLE ventas
+ADD COLUMN total DECIMAL(10, 2) NOT NULL DEFAULT 0;
+
 ALTER TABLE tipo_usuarios ADD descripcion_tipo VARCHAR(200) AFTER nombre_tipo;
 
 ALTER TABLE productos
@@ -189,91 +192,172 @@ INSERT INTO usuarios (
     nombre_usuario, Password, correo, tipo_usuario_id, created_by, updated_by
 )
 VALUES (
-    'Mariangel pirona',
-    'lalala1234', -- bcrypt hasheado
-    'mariangelpirona@gmail.com',
+    'Mariangel pirona', -- Nombre
+    'lalala1234', -- Password
+    'mariangelpirona@gmail.com', -- Correo 
     1,  -- tipo: Administrador
     1,   1  -- creado por el usuario "sistema"
 
 ),
 (
     'yetzibel.gonzales',
-    'lalu4321', -- bcrypt hasheado
+    'lalu4321', 
     'yetzibelgonzales@gmail.com',
-    2,  -- tipo: Administrador
-    1,   1  -- creado por el usuario "sistema"
+    2,  
+    1,   1  
 
 ),
 (
     'Abigail Caniucura',
-    'jijijaja654', -- bcrypt hasheado
+    'jijijaja654', 
     'abigailcaniucura@gmail.com',
-    4,  -- tipo: Administrador
-    1,   1  -- creado por el usuario "sistema"
-
+    4,  
+    1,   1 
 ),
 (
     'ignacio.garrido',
-    'tukituki', -- bcrypt hasheado
+    'tukituki', 
     'ignaciogarrido@gmail.com',
-    3,  -- tipo: Administrador
-    1,   1  -- creado por el usuario "sistema"
+    3,  
+    1,   1  
 
 ),
 (
     'benjaminrios',
-    'weko', -- bcrypt hasheado
+    'weko', 
     'benjaminrios@gmail.com',
-    4,  -- tipo: Administrador
-    1,   1  -- creado por el usuario "sistema"
+    4,  
+    1,   1 
 
 );
 
 
 INSERT productos (
-nombre_producto, precio, stock)
+nombre_producto, precio, stock, created_by, updated_by)
 
 VALUES ( 'Gabinete mATX 230W G08', -- NOMBRE
     20.590, -- PRECIO
     100, -- STOCK
-    1,  -- tipo: Administrador
-    1  -- creado por el usuario "sistema"
+    1, 
+    1  
 
 ),
 (
     'Memoria 128GB microSDXC (100MB/s) UHS-1 U1 Ultra', -- NOMBRE
      15.190, -- PRECIO
      200, -- STOCK
-    1,  -- tipo: Administrador
-    1  -- creado por el usuario "sistema"
+     1,  
+     1  
 
 ),
 (
     'Disco Externo 2TB 2.5" USB 3.0 Canvio Basics Black A5', -- NOMBRE
      82.490, -- PRECIO
      160, -- STOCK
-    1,  -- tipo: Administrador
-    1 -- creado por el usuario "sistema"
+	 1 ,
+	 1
 
 ),
 (
     'Placa Madre Intel H610M-K D4 Prime', -- NOMBRE
 	100.790, -- PRECIO
     50, -- STOCK
-    1,  -- tipo: Administrador
-    1  -- creado por el usuario "sistema"
+    1 ,
+	1 
 
 ),
 (
     'CPU Ryzen 5 5500 (AM4)',
      109.990, -- PRECIO
      500, -- STOCK
-    1,  -- tipo: Administrador
-    1  -- creado por el usuario "sistema"
+     1, 
+     1 
 
+);
+
+INSERT ventas (usuario_id, Fecha, total, created_by, updated_by)
+VALUES
+(
+    '4',   -- (ID del usuario que hizo la venta)
+    now(), -- (Fecha y hora actual del sistema)
+    150.00,-- (valor de la compra)
+    2,     -- (Usuario que creó el registro)
+    4      -- (Usuario que lo actualizó por última vez)
+),
+(
+    1,                                 
+    now(),                             
+    75.50,                             
+    2,                                
+    1                                  
+),
+(
+    3,                                 
+    now(),                             
+    200.00,                            
+    2,                                 
+    3                                  
+);
+
+
+INSERT detalle_ventas (venta_id, producto_id, cantidad, precio_unitario, created_by, updated_by)
+
+VALUES(
+    1, -- Esta línea corresponde a la venta con ID 1         
+    1, -- Producto con ID 1        
+    2, -- Se vendieron 2 unidades         
+    20.590, -- Precio unitario del producto     
+    2,      
+    2       
+),
+(
+    1,          
+    3,          
+    1,          
+    82.490,     
+    2,
+    3
+),
+
+(
+    2,          
+    2,          
+    5,          
+    15.190,     
+    2,
+    3
+),
+
+(
+    3,          
+    5,          
+    1,          
+    109.990,    
+    2,
+    2
+),
+
+(
+    2,          
+    4,          
+    1,          
+    100.790,    
+    2,
+    4
+),
+
+(
+    3,          
+    1,          
+    1,          
+    20.590,     
+    2,
+    1
 );
 
 
 select*from tipo_usuarios;
 select*from usuarios;
 select*from productos;
+select*from ventas;
+select*from detalle_ventas;
