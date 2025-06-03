@@ -1,3 +1,215 @@
+-- Crear la base de datos
+CREATE DATABASE sistema_ventas_4E;
+-- Seleccionar la base de datos para trabajar
+USE sistema_ventas_4E;
+-- Creamos la tabla tipo_usuario
+CREATE TABLE tipo_usuarios (
+id_tipo_usuario INT AUTO_INCREMENT PRIMARY KEY,
+-- Identificador único
+nombre_tipo VARCHAR(50) NOT NULL,
+-- Tipo de usuario (Admin, Cliente)
+-- Creamos la tabla tipo_usuario
+-- Campos de auditoría
+created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+-- Fecha creación
+updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+ON UPDATE CURRENT_TIMESTAMP, -- Fecha modificación
+created_by INT,-- Usuario que crea
+updated_by INT,-- Usuario que modifica
+deleted BOOLEAN DEFAULT FALSE -- Borrado lógico
+);
+
+
+-- Tabla para usuarios
+CREATE TABLE usuarios (
+id_usuario INT AUTO_INCREMENT PRIMARY KEY, -- Id único
+nombre_tipo VARCHAR(100) NOT NULL, -- Nombre de usuario
+correo VARCHAR(100) UNIQUE, -- Correo electrónico único
+tipo_usuario_id INT, -- Relación a tipo_usuario
+-- Campos de auditoría
+created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+-- Fecha creación
+updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+ON UPDATE CURRENT_TIMESTAMP, -- Fecha modificación
+created_by INT,-- Usuario que crea
+updated_by INT,-- Usuario que modifica
+deleted BOOLEAN DEFAULT FALSE -- Borrado lógico
+);
+
+
+
+ALTER TABLE usuarios -- Modificar tabla
+-- Agregar una restricción (FK)
+ADD CONSTRAINT fk_usuarios_tipo_usuarios
+-- Añade referencia(FK)
+FOREIGN KEY (tipo_usuario_id) REFERENCES
+tipo_usuarios(id_tipo_usuario);
+
+
+
+create table productos (
+id_productos int auto_increment primary key,
+nombre_producto varchar(100) not null,
+precio_producto float not null,
+stock_producto int not null,
+created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+ON UPDATE CURRENT_TIMESTAMP,
+created_by INT,
+updated_by INT,
+deleted BOOLEAN DEFAULT false
+);
+create table ventas (
+id_ventas int auto_increment primary key,
+usuario_id int not null,
+fechas_venta datetime not null,
+created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+ON UPDATE CURRENT_TIMESTAMP,
+created_by INT,
+updated_by INT,
+deleted BOOLEAN DEFAULT false
+);
+
+
+
+ALTER TABLE ventas
+drop CONSTRAINT fk_ventas_tipo_usuario;
+
+
+ALTER TABLE ventas
+ADD CONSTRAINT fk_ventas_usuarios
+FOREIGN KEY (usuario_id) REFERENCES
+usuarios(id_usuario);
+
+
+create table detalle_ventas (
+id_detalle_venta int auto_increment primary key,
+id_ventas int not null,
+id_producto int not null,
+cantidad int not null,
+precio_unitario float not null,
+created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+ON UPDATE CURRENT_TIMESTAMP,
+created_by INT,
+updated_by INT,
+deleted BOOLEAN DEFAULT false
+);
+
+alter table detalle_ventas
+add constraint fk_detalle_ventas_ventas
+foreign key (id_ventas) references
+ventas(id_ventas);
+
+
+alter table detalle_ventas
+add constraint fk_detalle_ventas_producto
+foreign key (id_producto) references
+productos(id_productos);
+
+alter table tipo_usuarios ADD descripcion_tipo varchar (200)  after nombre_tipo; 
+
+alter table usuarios ADD password varchar(20)  after nombre_tipo;
+
+ALTER TABLE usuarios
+CHANGE COLUMN nombre_tipo nombre_usuario varchar (50);
+
+
+
+
+
+INSERT INTO usuarios (
+    nombre_usuario, password, correo, tipo_usuario_id, created_by, updated_by
+)
+VALUES (
+    'sistema',
+    '$2y$10$2z', -- Contraseña encriptada (ejemplo realista con bcrypt)
+    'sistema@plataforma.cl',
+    NULL,
+    NULL,
+    NULL
+);
+
+INSERT INTO tipo_usuarios (
+    nombre_tipo,
+    descripcion_tipo,
+    created_by,
+    updated_by
+)
+VALUES (
+    'Administrador',
+    'Accede a todas las funciones del sistema, incluida la administración de usuarios.',
+    1, -- creado por el usuario inicial
+    1 -- actualizado por el mismo
+),
+(
+    'gerente',
+    'gerente se encarga de planificar, organizar, dirigir y controlar los recursos de las ventas.',
+    1, -- creado por el usuario inicial
+    1 -- actualizado por el mismo
+),
+(
+    'vendedor',
+    'Gestiona las ventas .',
+    1, -- creado por el usuario inicial
+    1 -- actualizado por el mismo
+);
+
+
+INSERT INTO usuarios (
+    nombre_usuario, password, correo, tipo_usuario_id, created_by, updated_by
+)
+values 
+(
+    'Benjamin',
+    '08052007', -- Contraseña encriptada (ejemplo realista con bcrypt)
+    'benjaminrios@liceovvh.cl',
+    2,
+    1,1
+),  
+(
+    'Samira',
+    '15072016', -- Contraseña encriptada (ejemplo realista con bcrypt)
+    'samirapirona@liceovvh.cl',
+    2,
+    1,1
+);
+
+
+INSERT INTO productos (
+nombre_producto, precio_producto, stock_producto,  created_by, updated_by, deleted
+)
+
+VALUES
+(
+	'Fuente de Poder 550W 80 Plus Bronze Helios M2',
+    60.980, -- Precio
+	100, -- stock
+    1,
+    1
+),
+(
+	'Gabinete ATX 230W Leeroy 2801',
+    38.480, -- Precio
+	20, -- stock
+    1,
+    1
+),
+(
+	'Thermal Grizzly Pasta Térmica Hydronaut 7.8g',
+    21.590, -- Precio
+	200, -- stock
+    1,
+    1
+);
+
+
+
+
+select*from productos;
+select*from usuarios;
+select*from tipo_usuarios;
 CREATE DATABASE sistema_ventas_4E;
 USE sistema_ventas_4E;
 
@@ -189,7 +401,7 @@ VALUES (
 );
 
 INSERT INTO usuarios (
-    nombre_usuario, Password, correo, tipo_usuario_id, created_by, updated_by
+    nombre_usuario, password, correo, tipo_usuario_id, created_by, updated_by
 )
 VALUES (
     'Mariangel pirona', -- Nombre
@@ -232,8 +444,8 @@ VALUES (
 );
 
 
-INSERT productos (
-nombre_producto, precio, stock, created_by, updated_by)
+INSERT INTO productos (
+nombre_producto, precio_producto, stock_producto, created_by, updated_by)
 
 VALUES ( 'Gabinete mATX 230W G08', -- NOMBRE
     20.590, -- PRECIO
@@ -274,33 +486,41 @@ VALUES ( 'Gabinete mATX 230W G08', -- NOMBRE
     1 
 
 );
-
-INSERT ventas (usuario_id, Fecha, total, created_by, updated_by)
+INSERT INTO ventas (usuario_id, fechas_venta, created_by, updated_by)
 VALUES
 (
-    '4',   -- (ID del usuario que hizo la venta)
+    '1',   -- (ID del usuario que hizo la venta)
     now(), -- (Fecha y hora actual del sistema)
-    150.00,-- (valor de la compra)
     2,     -- (Usuario que creó el registro)
     4      -- (Usuario que lo actualizó por última vez)
 ),
 (
-    1,                                 
-    now(),                             
-    75.50,                             
+    2,                                 
+    now(),                          
     2,                                
     1                                  
 ),
 (
-    3,                                 
-    now(),                             
-    200.00,                            
+    6,                                 
+    now(),                           
     2,                                 
     3                                  
+),
+(
+    5,
+    now(),
+    3,
+    1
+),
+(
+    3,
+    now(),
+    3,
+    1
 );
 
 
-INSERT detalle_ventas (venta_id, producto_id, cantidad, precio_unitario, created_by, updated_by)
+INSERT INTO detalle_ventas (id_ventas, id_producto, cantidad, precio_unitario, created_by, updated_by)
 
 VALUES(
     1, -- Esta línea corresponde a la venta con ID 1         
@@ -355,9 +575,61 @@ VALUES(
     1
 );
 
+UPDATE usuarios
+SET deleted = 1
+where id_usuario  between 1 and 2;
+
+-- consulta los usuarios activos 
+select deleted
+from  usuarios  
+where  id_usuario between 1 and 2;
+
+-- muestra los usuarios tipo administrador 
+select nombre_usuario
+from usuarios
+where tipo_usuario_id = 1;
+
+-- muestra los usuarios que empiezan con la letra A
+select nombre_usuario
+from usuarios
+WHERE nombre_usuario LIKE 'A%';
+
+
+-- muestra la fecha en la que se crearon los usuarios
+select nombre_usuario
+from usuarios
+where date ( created_at) between "2025-06-03" and  "2025-06-03";
+
+-- creaciones propias 
+
+select nombre_usuario
+from usuarios
+where nombre_usuario like 'b%';
+
+select nombre_usuario
+from usuarios
+where tipo_usuario_id = 3;
+
+select nombre_producto
+from productos
+where id_productos between 1 and 5;
+
+
+select nombre_producto
+from productos 
+where nombre_producto like  'M%';
+
+select nombre_usuario
+from usuarios
+where id_usuario between 1 and 4;
 
 select*from tipo_usuarios;
 select*from usuarios;
 select*from productos;
 select*from ventas;
 select*from detalle_ventas;
+
+
+
+SHOW COLUMNS FROM ventas;
+SET FOREIGN_KEY_CHECKS = 1
