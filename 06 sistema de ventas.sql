@@ -244,18 +244,18 @@ VALUES ( 'Gabinete mATX 230W G08', -- NOMBRE
 ),
 (
     'Memoria 128GB microSDXC (100MB/s) UHS-1 U1 Ultra', -- NOMBRE
-     15.190, -- PRECIO
-     200, -- STOCK
-     1,  
-     1  
+    15.190, -- PRECIO
+    200, -- STOCK
+    1,  
+    1  
 
 ),
 (
     'Disco Externo 2TB 2.5" USB 3.0 Canvio Basics Black A5', -- NOMBRE
-     82.490, -- PRECIO
-     160, -- STOCK
-	 1 ,
-	 1
+    82.490, -- PRECIO
+    160, -- STOCK
+	1 ,
+	1
 
 ),
 (
@@ -268,10 +268,10 @@ VALUES ( 'Gabinete mATX 230W G08', -- NOMBRE
 ),
 (
     'CPU Ryzen 5 5500 (AM4)',
-     109.990, -- PRECIO
-     500, -- STOCK
-     1, 
-     1 
+    109.990, -- PRECIO
+    500, -- STOCK
+    1, 
+    1 
 
 );
 
